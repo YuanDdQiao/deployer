@@ -1,0 +1,53 @@
+{
+	"ImportPath": "lingyiRobot",
+	"GoVersion": "go1.10",
+	"GodepVersion": "v80",
+	"Packages": [
+		"./..."
+	],
+	"Deps": [
+		{
+			"ImportPath": "github.com/kr/fs",
+			"Comment": "v0.1.0",
+			"Rev": "1455def202f6e05b95cc7bfc7e8ae67ae5141eba"
+		},
+		{
+			"ImportPath": "github.com/pkg/errors",
+			"Comment": "v0.8.0-17-g059132a",
+			"Rev": "059132a15dd08d6704c67711dae0cf35ab991756"
+		},
+		{
+			"ImportPath": "github.com/pkg/sftp",
+			"Comment": "v1.8.3",
+			"Rev": "08de04f133f27844173471167014e1a753655ac8"
+		},
+		{
+			"ImportPath": "golang.org/x/crypto/curve25519",
+			"Rev": "3d3f9f413869b949e48070b5bc593aa22cc2b8f2"
+		},
+		{
+			"ImportPath": "golang.org/x/crypto/ed25519",
+			"Rev": "3d3f9f413869b949e48070b5bc593aa22cc2b8f2"
+		},
+		{
+			"ImportPath": "golang.org/x/crypto/ed25519/internal/edwards25519",
+			"Rev": "3d3f9f413869b949e48070b5bc593aa22cc2b8f2"
+		},
+		{
+			"ImportPath": "golang.org/x/crypto/internal/chacha20",
+			"Rev": "3d3f9f413869b949e48070b5bc593aa22cc2b8f2"
+		},
+		{
+			"ImportPath": "golang.org/x/crypto/internal/subtle",
+			"Rev": "3d3f9f413869b949e48070b5bc593aa22cc2b8f2"
+		},
+		{
+			"ImportPath": "golang.org/x/crypto/poly1305",
+			"Rev": "3d3f9f413869b949e48070b5bc593aa22cc2b8f2"
+		},
+		{
+			"ImportPath": "golang.org/x/crypto/ssh",
+			"Rev": "3d3f9f413869b949e48070b5bc593aa22cc2b8f2"
+		}
+	]
+}
