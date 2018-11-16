@@ -19,7 +19,6 @@ type arrayFlags []string
 
 var sshAddrs arrayFlags
 var configFile = flag.String("config", "", "deployer config file")
-var sshAddr = flag.Var(&sshAddrs, "host", "ssh addr")
 var sshPort = flag.String("port", "", "ssh port")
 var sshUser = flag.String("user", "", "ssh user")
 var sshPass = flag.String("password", "", "ssh password")
@@ -40,6 +39,8 @@ func (i *arrayFlags) Set(value string) error {
 
 func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
+	flag.Var(&sshAddrs, "host", "ssh addr")
+
 	flag.Parse()
 
 	cfg, err := deploy.LoadConfig(*configFile)
@@ -48,8 +49,8 @@ func main() {
 		return
 	}
 
-	if len(*sshAddr) > 0 {
-		cfg.Servers = *sshAddr
+	if len(sshAddrs) > 0 {
+		cfg.Servers = sshAddrs
 	}
 
 	if len(*sshPort) > 0 {
@@ -59,7 +60,6 @@ func main() {
 			return
 		}
 	}
-
 	if len(*sshUser) > 0 {
 		cfg.Username = *sshUser
 	}
