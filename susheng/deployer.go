@@ -7,6 +7,8 @@ import (
 	"flag"
 	"fmt"
 	"lingyiRobot/pkg/config"
+	"lingyiRobot/pkg/upload"
+	"log"
 	"runtime"
 	"strconv"
 )
@@ -19,11 +21,12 @@ type arrayFlags []string
 
 var sshAddrs arrayFlags
 var configFile = flag.String("config", "", "deployer config file")
-var sshPort = flag.String("port", "", "ssh port")
-var sshUser = flag.String("user", "", "ssh user")
-var sshPass = flag.String("password", "", "ssh password")
+var sshPort = flag.String("port", "", "remote ssh port")
+var sshUser = flag.String("user", "", "remote ssh user")
+var sshPass = flag.String("password", "", "remote ssh password")
 var srcDir = flag.String("src", "", "local dir")
 var dstDir = flag.String("dst", "", "destination dir")
+var bakDir = flag.String("bak", "", "backup to")
 
 // Value ...
 func (i *arrayFlags) String() string {
@@ -38,8 +41,9 @@ func (i *arrayFlags) Set(value string) error {
 }
 
 func main() {
-	runtime.GOMAXPROCS(runtime.NumCPU())
-	flag.Var(&sshAddrs, "host", "ssh addr")
+	// runtime.GOMAXPROCS(runtime.NumCPU())
+	runtime.GOMAXPROCS(2)
+	flag.Var(&sshAddrs, "host", "remote ssh addr")
 
 	flag.Parse()
 
@@ -75,12 +79,22 @@ func main() {
 	if len(*dstDir) > 0 {
 		cfg.Destination = *dstDir
 	}
+	if len(*bakDir) > 0 {
+		cfg.Backupdir = *bakDir
+	}
+	if len(cfg.Backupdir) < 0 {
+		log.Printf("项目不需要备份...\n")
+	} else {
+		log.Printf("旧项目备份地址: %v...\n", cfg.Backupdir)
+	}
+
 	if len(cfg.Servers) > 1 {
 		for i, ipaddr := range cfg.Servers {
-			fmt.Printf("查看IP 是否正确：%v", string(ipaddr[i]))
-			// upload.DoBackup(string(ipaddr[i]), cfg.Port, cfg.Username, cfg.Password, cfg.Directory, cfg.Destination)
+			// fmt.Printf("查看IP 是否正确：%v", string(ipaddr[i]))
+			upload.DoBackup(string(ipaddr[i]), cfg.Port, cfg.Username, cfg.Password, cfg.Directory, cfg.Destination, cfg.Backupdir)
 		}
 	} else {
-		fmt.Printf("查看IP 是否正确：%v", cfg.Servers)
+		// fmt.Printf("查看IP 是否正确：%v", cfg.Servers)
+		upload.DoBackup(cfg.Servers[0], cfg.Port, cfg.Username, cfg.Password, cfg.Directory, cfg.Destination, cfg.Backupdir)
 	}
 }

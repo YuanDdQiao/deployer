@@ -27,6 +27,7 @@ type Config struct {
 	Project     string   `json:"project"`
 	Directory   string   `json:"directory"`
 	Destination string   `json:"destination"`
+	Backupdir   string   `json:"backupdir"`
 }
 
 func LoadConfig(name string) (config Config, err error) {
