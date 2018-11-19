@@ -4,10 +4,10 @@ import json
 import sys
 import os
 
-# python3 -u H5-dist-deploy_susheng_tomcat.py hi-aliyun-prod/hi-h5-llcs
+# python3 -u H5-pro-deploy_susheng_tomcat.py hi-aliyun-prod/hi-h5-llcs
 if __name__ == "__main__":
     if (len(sys.argv) < 2):
-        print("Usage: python3 H5-dist-deploy_susheng_tomcat.sh [project name]")
+        print("Usage: python3 H5-pro-deploy_susheng_tomcat.py [project name]")
         sys.exit()
     
     # copy setting files to current working directory
