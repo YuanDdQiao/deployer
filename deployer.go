@@ -4,10 +4,10 @@
 package main
 
 import (
+	"deployer/pkg/config"
+	"deployer/pkg/upload"
 	"flag"
 	"fmt"
-	"lingyiRobot/pkg/config"
-	"lingyiRobot/pkg/upload"
 	"log"
 	"runtime"
 	"strconv"
