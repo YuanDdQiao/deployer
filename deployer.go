@@ -87,11 +87,10 @@ func main() {
 	} else {
 		log.Printf("旧项目备份地址: %v...\n", cfg.Backupdir)
 	}
-
 	if len(cfg.Servers) > 1 {
-		for i, ipaddr := range cfg.Servers {
-			// fmt.Printf("查看IP 是否正确：%v", string(ipaddr[i]))
-			upload.DoBackup(string(ipaddr[i]), cfg.Port, cfg.Username, cfg.Password, cfg.Directory, cfg.Destination, cfg.Backupdir)
+		for index := 0; index < len(cfg.Servers); index++ {
+			// fmt.Printf("查看IP 是否正确：%v", cfg.Servers[index])
+			upload.DoBackup(cfg.Servers[index], cfg.Port, cfg.Username, cfg.Password, cfg.Directory, cfg.Destination, cfg.Backupdir)
 		}
 	} else {
 		// fmt.Printf("查看IP 是否正确：%v", cfg.Servers)
