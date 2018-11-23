@@ -27,6 +27,7 @@ var sshPass = flag.String("password", "", "remote ssh password")
 var srcDir = flag.String("src", "", "local dir")
 var dstDir = flag.String("dst", "", "destination dir")
 var bakDir = flag.String("bak", "", "backup to")
+var recoverDir = flag.String("recover", "false", "recover to")
 
 // Value ...
 func (i *arrayFlags) String() string {
@@ -87,6 +88,19 @@ func main() {
 	} else {
 		log.Printf("旧项目备份地址: %v...\n", cfg.Backupdir)
 	}
+	// 是否恢复上一次操作
+	if *recoverDir == "true" {
+		fmt.Printf("不做部署操作，只做恢复上一次的备份：%v \n", *recoverDir)
+		if len(cfg.Servers) > 1 {
+			for index := 0; index < len(cfg.Servers); index++ {
+				upload.DoRecover(cfg.Servers[index], cfg.Port, cfg.Username, cfg.Password, cfg.Destination, cfg.Backupdir)
+			}
+		} else {
+			upload.DoRecover(cfg.Servers[0], cfg.Port, cfg.Username, cfg.Password, cfg.Destination, cfg.Backupdir)
+		}
+		return
+	}
+
 	if len(cfg.Servers) > 1 {
 		for index := 0; index < len(cfg.Servers); index++ {
 			// fmt.Printf("查看IP 是否正确：%v", cfg.Servers[index])

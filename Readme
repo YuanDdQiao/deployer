@@ -1,0 +1,29 @@
+# 文件上传功能
+---
+{
+"servers": ["192.168.1.x","192.168.1.x2"], 
+"port": 22,                    
+"username": "root",            
+"password": "password",   
+"project": "dba",
+"directory":"F:\\data",
+"destination":"/tmp/remotedir/",
+"backupdir":"/tmp/backupdir"
+}
+
+---
+# 将F:\\data 下的文件或文件夹 上传到机器的 /tmp/remotedir/ 目录下
+# 且目录 /tmp/backupdir 用于备份上传之前的 remotedir 目录极其子目录的文件 
+# 格式为 remotedirYYYY-MMM-DD.tar.gz
+
+./deployer -config=./settings.json
+
+---
+从 /tmp/backupdir 恢复最近的一次备份
+./deployer -config=./settings.json -recover=true
+
+---
+*注明：
+支持从Windows 上传文件到Linux 
+支持Linux 之间相互上传
+不支持Windows 上传到Windows ，么有写Windows 的删除命令

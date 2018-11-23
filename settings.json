@@ -6,5 +6,5 @@
 "project": "dba",
 "directory":"F:\\data",
 "destination":"/tmp/remotedir/",
-"backupdir":"/tmp/appbak"
+"backupdir":"/tmp/backupdir"
 }

@@ -137,12 +137,12 @@ func exec_shell(host string, port int, userName string, password string, command
 		log.Fatal(err)
 	}
 	defer session.Close()
-	if strings.Contains(fmt.Sprintf("%v", "rm  -rf "), "rm ") &&
-		strings.Contains(fmt.Sprintf("%v", "rm  -rf "), " -rf ") &&
-		(strings.Contains(fmt.Sprintf("%v", "rm  -rf "), " / ") ||
-			strings.Contains(fmt.Sprintf("%v", "rm  -rf "), " /* ") ||
-			strings.Contains(fmt.Sprintf("%v", "rm  -rf "), " ./* ") ||
-			strings.Contains(fmt.Sprintf("%v", "rm  -rf "), " ./ ")) {
+	if strings.Contains(fmt.Sprintf("%v", commandShell), "rm ") &&
+		strings.Contains(fmt.Sprintf("%v", commandShell), " -rf ") &&
+		(strings.Contains(fmt.Sprintf("%v", commandShell), " / ") ||
+			strings.Contains(fmt.Sprintf("%v", commandShell), " /* ") ||
+			strings.Contains(fmt.Sprintf("%v", commandShell), " ./* ") ||
+			strings.Contains(fmt.Sprintf("%v", commandShell), " ./ ")) {
 
 		log.Fatal("高危操作，禁止运行！请查看配置文件参数: destination   \n\t，禁止 / 、 * 、./* 、./ 等直接影响操作系统系统目录文件!")
 		return false
@@ -165,7 +165,42 @@ func removeDuplicatesAndEmpty(a []string) (ret []string) {
 	return
 }
 
-// 对外执行窗口
+// 对外执行窗口此恢复函数
+// ls  -lt ../appbak/|grep 'we_chat'|head -n 1|awk '{print $9}'
+func DoRecover(host string, port int, userName string, password string, remotePath string, Backupdir string) {
+	var (
+		err        error
+		sftpClient *sftp.Client
+	)
+	remote_host = host
+	sftpClient, err = connect(userName, password, host, port)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer sftpClient.Close()
+	tmpV := strings.Split(strings.Replace(remotePath, "\\", "/", -1), "/")
+	tmpV2 := removeDuplicatesAndEmpty(tmpV)
+	lnt := len(tmpV2) - 1
+	if len(tmpV2[lnt]) == 0 {
+		log.Fatal(" Error: 目录格式不正确！")
+		return
+	}
+	_, errStat := sftpClient.Stat(Backupdir)
+	if errStat != nil {
+		log.Fatal(Backupdir + " " + remote_host + " remote" + " backup path not exists!")
+	}
+	// 测试命令：
+	fmt.Printf("filenameget=`ls  -lt %v/|grep '%v'|head -n 1|awk '{print $9}'`;cd %v;tar -zxvf $filenameget;rm -rf %v;scp -r %v %v;rm -rf %v; \n", Backupdir, tmpV2[lnt], Backupdir, remotePath+"/*", tmpV2[lnt]+"/*", remotePath, tmpV2[lnt])
+	tmpOk2 := exec_shell(host, port, userName, password, fmt.Sprintf("filenameget=`ls  -lt %v/|grep '%v'|head -n 1|awk '{print $9}'`;cd %v;tar -zxvf $filenameget;rm -rf %v;scp -r %v %v;rm -rf %v;", Backupdir, tmpV2[lnt], Backupdir, remotePath+"/*", tmpV2[lnt]+"/*", remotePath, tmpV2[lnt]))
+	if !tmpOk2 {
+		log.Fatal(" 指令异常！")
+
+	}
+	log.Println("项目恢复：" + remotePath + "成功")
+
+}
+
+// 对外执行窗口此上传文件
 func DoBackup(host string, port int, userName string, password string, localPath string, remotePath string, Backupdir string) {
 	var (
 		err        error
@@ -190,17 +225,19 @@ func DoBackup(host string, port int, userName string, password string, localPath
 		log.Fatal(Backupdir + remote_host + " remote" + " path not exists!")
 	}
 
+	backDate := fmt.Sprintf("%v", time.Now().Format("2006-01-02"))
 	// 是否需要备份处理 tmpV
 	if len(Backupdir) > 0 {
 		tmpV := strings.Split(strings.Replace(remotePath, "\\", "/", -1), "/")
 		tmpV2 := removeDuplicatesAndEmpty(tmpV)
 		lnt := len(tmpV2) - 1
+		backFileName := fmt.Sprintf("%v", tmpV2[lnt])
 		if len(tmpV2[lnt]) == 0 {
-			log.Fatal(" Error: 目录格式不争取！")
+			log.Fatal(" Error: 目录格式不正确！")
 			return
 		}
-		log.Printf("项目开始备份：tar -zcvf %v%v%v.tar %v \n", Backupdir, fmt.Sprintf("%v", tmpV2[lnt]), fmt.Sprintf("%v", time.Now().Format("2006-01-02")), remotePath)
-		tmpOk1 := exec_shell(host, port, userName, password, fmt.Sprintf("tar -zcvf %v%v%v.tar %v", Backupdir, fmt.Sprintf("%v", tmpV2[lnt]), fmt.Sprintf("%v", time.Now().Format("2006-01-02")), remotePath))
+		log.Printf("项目开始备份：cd %v/..;tar -zcvf %v%v.tar.gz %v ;scp %v%v.tar.gz %v ;rm -rf %v%v.tar.gz ;\n", remotePath, backFileName, backDate, backFileName, backFileName, backDate, Backupdir, backFileName, backDate)
+		tmpOk1 := exec_shell(host, port, userName, password, fmt.Sprintf("cd %v/..;tar -zcvf %v%v.tar.gz %v ;scp %v%v.tar.gz %v ;rm -rf %v%v.tar.gz ;", remotePath, backFileName, backDate, backFileName, backFileName, backDate, Backupdir, backFileName, backDate))
 		if !tmpOk1 {
 			log.Fatal(" 指令异常！")
 		}
