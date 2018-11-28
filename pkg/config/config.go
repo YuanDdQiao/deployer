@@ -18,6 +18,13 @@ var defaultConfig = &struct {
 	fileDeadtime: "24h",
 }
 
+// type opsConfig struct {
+// 	Opsip    string `json:"opsip"`
+// 	Opsuser  int    `json:"opsuser"`
+// 	Opsport  string `json:"opsport"`
+// 	Opspsswd string `json:"opspsswd"`
+// }
+
 //有了`json:network`这种注释，后面json解析就可以把相应的数据塞到对应的结构里面来
 type Config struct {
 	Servers     []string `json:"servers"`
@@ -28,6 +35,11 @@ type Config struct {
 	Directory   string   `json:"directory"`
 	Destination string   `json:"destination"`
 	Backupdir   string   `json:"backupdir"`
+	// 堡垒机配置
+	Opsip    string `json:"opsip"`
+	Opsuser  string `json:"opsuser"`
+	Opsport  int    `json:"opsport"`
+	Opspsswd string `json:"opspsswd"`
 }
 
 func LoadConfig(name string) (config Config, err error) {

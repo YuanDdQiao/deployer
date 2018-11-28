@@ -4,7 +4,11 @@
 "username": "root",            
 "password": "cw@123",   
 "project": "dba",
-"directory":"F:\\data",
+"directory":"F:\\data\\dba",
 "destination":"/tmp/remotedir/",
-"backupdir":"/tmp/backupdir"
+"backupdir":"/tmp/backupdir/",
+"opsip":"192.168.1.47",
+"opsuser":"root",
+"opsport":22,
+"opspsswd":"cw@123"
 }
